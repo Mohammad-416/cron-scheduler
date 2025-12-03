@@ -1,0 +1,8 @@
+jobs:
+  - name: "say_hello"
+    every: "10s"
+    command: "echo 'Hello from GoScheduler'"
+
+  - name: "show_time"
+    every: "15s"
+    command: "date"
