@@ -1,7 +1,7 @@
 jobs:
-  - name: "say_hello"
+  - name: "fetch_aws_chatapp"
     every: "10s"
-    command: "echo 'Hello from GoScheduler'"
+    command: "curl https://aws-chatbot-vozk.onrender.com"
 
   - name: "show_time"
     every: "15s"
