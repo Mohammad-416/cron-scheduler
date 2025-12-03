@@ -1,4 +1,4 @@
-cron-scheduler
+# cron-scheduler
 
 cron-scheduler is a lightweight, interval-based job scheduler written in Go.
 It works similarly to cron, but with one key difference: it remembers timer progress across restarts.
@@ -8,7 +8,7 @@ If the downtime is longer than the interval, the job runs immediately and then f
 
 This makes the scheduler predictable and reliable even when the process stops unexpectedly.
 
-Why this exists
+## Why this exists
 
 Traditional cron only runs jobs at fixed times.
 Most interval schedulers ignore downtime and restart all timers from zero.
@@ -27,7 +27,7 @@ After that, it returns to the original interval pattern
 
 This behavior is ideal for periodic tasks that shouldn't drift over time.
 
-Features
+## Features
 
 Simple YAML configuration for defining jobs
 
@@ -43,7 +43,7 @@ Automatic catch-up run when overdue
 
 Graceful shutdown via OS signals
 
-How it works
+## How it works
 
 For each job, the scheduler tracks:
 
@@ -54,20 +54,21 @@ how long the interval is
 how much time passed before shutdown
 
 On startup, it compares the last run time with the current time:
+**If elapsed < interval**
+**→ resume from the remaining time**
 
-If elapsed < interval
-→ resume from the remaining time
+**If elapsed ≥ interval**
+**→ run once immediately**
+**→ next run happens after interval - (elapsed % interval)**
 
-If elapsed ≥ interval
-→ run once immediately
-→ next run happens after interval - (elapsed % interval)
+**This keeps the scheduler aligned with the original timing.**
 
-This keeps the scheduler aligned with the original timing.
 
-Configuration
+## Configuration
 
 Create a config.yaml file:
 
+```
 jobs:
   - name: "say_hello"
     every: "10s"
@@ -76,7 +77,7 @@ jobs:
   - name: "show_time"
     every: "15s"
     command: "date"
-
+```
 
 Each job contains:
 
@@ -89,23 +90,23 @@ command: shell command to execute
 Installation
 
 Build the scheduler:
-
+```
 go build -o cron-scheduler ./cmd
-
+```
 
 Run it:
-
+```
 ./cron-scheduler -config=config.yaml -state=state.json
-
+```
 
 The first run will create state.json automatically.
 
 Stopping & resuming
 
 Stop the scheduler with:
-
+```
 CTRL + C
-
+```
 
 On shutdown, it saves:
 
